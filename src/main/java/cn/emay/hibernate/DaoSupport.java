@@ -636,7 +636,8 @@ public abstract class DaoSupport {
 		long totalCount = (Long) this.getUniqueResult(countHql, params);
 		// 赋值
 		int total = (int) totalCount;
-		int currentPage = start / limit + 1;// 简单的分页逻辑
+		// 简单的分页逻辑
+		int currentPage = start / limit + 1;
 		int totalPage = total / limit;
 		if (totalCount % limit != 0) {
 			totalPage++;

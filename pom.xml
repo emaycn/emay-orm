@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>cn.emay</groupId>
-	<artifactId>hibernate</artifactId>
+	<artifactId>emay-hibernate</artifactId>
 	<packaging>jar</packaging>
 	<version>1.0.0</version>
 
