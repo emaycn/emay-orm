@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.hibernate.HibernateException;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.orm.hibernate4.HibernateCallback;
-import org.springframework.orm.hibernate4.HibernateTemplate;
+import org.springframework.orm.hibernate5.HibernateCallback;
+import org.springframework.orm.hibernate5.HibernateTemplate;
 
 import cn.emay.utils.db.common.Page;
 
@@ -159,7 +159,7 @@ public abstract class DaoSupport {
 		return this.getHibernateTemplate().execute(new HibernateCallback<List<?>>() {
 			@Override
 			public List<?> doInHibernate(Session session) throws HibernateException {
-				Query query = session.createSQLQuery(sql);
+				Query<?> query = session.createSQLQuery(sql);
 				fillParameters(query, params);
 				if (limit != 0) {
 					query.setFirstResult(start);
@@ -319,7 +319,7 @@ public abstract class DaoSupport {
 		return this.getHibernateTemplate().execute(new HibernateCallback<Integer>() {
 			@Override
 			public Integer doInHibernate(Session session) throws HibernateException {
-				Query query = session.createQuery(hql);
+				Query<?> query = session.createQuery(hql);
 				if (params != null && params.size() > 0) {
 					fillParameters(query, params);
 				}
@@ -379,7 +379,6 @@ public abstract class DaoSupport {
 	 * @param params
 	 * @return
 	 */
-	@SuppressWarnings({ "unchecked" })
 	public <T> T getUniqueResult(Class<T> clazz, final String hql, final Map<String, Object> params) {
 		if (hql == null) {
 			return null;
@@ -390,7 +389,7 @@ public abstract class DaoSupport {
 		return this.getHibernateTemplate().execute(new HibernateCallback<T>() {
 			@Override
 			public T doInHibernate(Session session) throws HibernateException {
-				Query query = session.createQuery(hql);
+				Query<T> query = session.createQuery(hql, clazz);
 				if (params != null && params.size() > 0) {
 					fillParameters(query, params);
 				}
@@ -495,7 +494,6 @@ public abstract class DaoSupport {
 	 * @param params
 	 * @return
 	 */
-	@SuppressWarnings({ "unchecked" })
 	public <T> List<T> getPageListResult(Class<T> clazz, final String hql, final int start, final int limit, final Map<String, Object> params) {
 		if (hql == null) {
 			return new ArrayList<T>();
@@ -506,7 +504,7 @@ public abstract class DaoSupport {
 		return this.getHibernateTemplate().execute(new HibernateCallback<List<T>>() {
 			@Override
 			public List<T> doInHibernate(Session session) throws HibernateException {
-				Query query = session.createQuery(hql);
+				Query<T> query = session.createQuery(hql, clazz);
 				if (params != null && params.size() > 0) {
 					fillParameters(query, params);
 				}

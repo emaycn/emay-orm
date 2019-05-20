@@ -5,7 +5,7 @@
 	<groupId>cn.emay</groupId>
 	<artifactId>emay-orm</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -16,9 +16,9 @@
 		<maven.resources.plugin.version>2.6</maven.resources.plugin.version>
 		<maven.source.plugin.version>2.4</maven.source.plugin.version>
 
-		<spring.version>4.2.4.RELEASE</spring.version>
-		<hibernate.version>4.3.11.Final</hibernate.version>
-		<emay.utils.version>1.0.0</emay.utils.version>
+		<spring.version>5.1.6.RELEASE</spring.version>
+		<hibernate.version>5.3.9.Final</hibernate.version>
+		<emay.utils.version>1.0.2</emay.utils.version>
 	</properties>
 
 	<dependencies>
@@ -34,7 +34,7 @@
 		</dependency>
 		<dependency>
 			<groupId>cn.emay</groupId>
-			<artifactId>utils</artifactId>
+			<artifactId>emay-utils</artifactId>
 			<version>${emay.utils.version}</version>
 		</dependency>
 	</dependencies>
