@@ -1,4 +1,4 @@
-package cn.emay.hibernate;
+package cn.emay.orm;
 
 import java.io.Serializable;
 import java.util.ArrayList;
