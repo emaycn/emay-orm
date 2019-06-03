@@ -24,7 +24,7 @@ import cn.emay.utils.db.common.Page;
  * @author Frank
  *
  */
-public abstract class DaoSupport {
+public abstract class AbstractDaoSupport {
 
 	/**
 	 * 获取JdbcTemplate

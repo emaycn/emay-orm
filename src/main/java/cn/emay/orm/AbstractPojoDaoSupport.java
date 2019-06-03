@@ -19,7 +19,7 @@ import java.util.Map.Entry;
  *
  * @param <E>
  */
-public abstract class PojoDaoSupport<E extends java.io.Serializable> extends DaoSupport {
+public abstract class AbstractPojoDaoSupport<E extends java.io.Serializable> extends AbstractDaoSupport {
 
 	/**
 	 * 当前POJO的Class属性
@@ -32,7 +32,7 @@ public abstract class PojoDaoSupport<E extends java.io.Serializable> extends Dao
 	final public String FIND_ALL_HQL;
 
 	@SuppressWarnings("unchecked")
-	public PojoDaoSupport() {
+	public AbstractPojoDaoSupport() {
 		this.entityClass = (Class<E>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
 		FIND_ALL_HQL = new StringBuffer().append(" from ").append(this.entityClass.getSimpleName()).append(" ").toString();
 	}
@@ -89,6 +89,34 @@ public abstract class PojoDaoSupport<E extends java.io.Serializable> extends Dao
 	}
 
 	/**
+	 * 按照主键删除
+	 * 
+	 * @param ids
+	 *            删除的主键集合
+	 */
+	public void deleteById(Serializable... ids) {
+		if (ids == null) {
+			return;
+		}
+		int size = ids.length;
+		String hql = "delete from " + this.entityClass.getSimpleName() + " where id in (:newids)";
+		Map<String, Object> params = new HashMap<String, Object>();
+		List<Object> newids = new ArrayList<Object>(1000);
+		for (int i = 0; i < size; i++) {
+			newids.add(ids[i]);
+			boolean isSaveOne = (i != 0 && i % 980 == 0) || i == size - 1;
+			if (isSaveOne) {
+				params.put("newids", newids);
+				this.execByHql(hql, params);
+				params.clear();
+				params = new HashMap<String, Object>();
+				newids.clear();
+				newids = new ArrayList<Object>(1000);
+			}
+		}
+	}
+
+	/**
 	 * 批量删,主键名为ID
 	 * 
 	 * @param entities
@@ -101,7 +129,8 @@ public abstract class PojoDaoSupport<E extends java.io.Serializable> extends Dao
 		List<Object> newids = new ArrayList<Object>(1000);
 		for (int i = 0; i < size; i++) {
 			newids.add(ids.get(i));
-			if ((i != 0 && i % 980 == 0) || i == size - 1) {
+			boolean isSaveOne = (i != 0 && i % 980 == 0) || i == size - 1;
+			if (isSaveOne) {
 				params.put("newids", newids);
 				this.execByHql(hql, params);
 				params.clear();
