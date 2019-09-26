@@ -534,7 +534,7 @@ public abstract class AbstractDaoSupport {
 		if (clazz == null) {
 			throw new NullPointerException("clazz is null");
 		}
-		Map<String, Object> map = this.getPageResultMap(hql, start, limit, params);
+		Map<String, Object> map = this.getPageResultMap(hql, start, limit, params,clazz);
 		Page<T> page = new Page<T>();
 		page.setCurrentPageNum(Integer.valueOf(String.valueOf(map.get(Page.CURRENT_PAGE))));
 		page.setStart(Integer.valueOf(String.valueOf(map.get(Page.START))));
@@ -563,16 +563,37 @@ public abstract class AbstractDaoSupport {
 	 * @return
 	 */
 	public Map<String, Object> getPageResultMap(String hql, int start, int limit, Map<String, Object> params) {
+		return getPageResultMap(hql, start, limit, params, Object.class);
+	}
+	
+	/**
+	 * 分页查询<br/>
+	 * 注意：如果是带有group的hql，本方法不支持<br/>
+	 * 此方法返回MAP:<br/>
+	 * &nbsp;&nbsp;&nbsp;&nbsp;list=数据列表<br/>
+	 * &nbsp;&nbsp;&nbsp;&nbsp;totalCount=数据总数<br/>
+	 * &nbsp;&nbsp;&nbsp;&nbsp;start=从第几条开始<br/>
+	 * &nbsp;&nbsp;&nbsp;&nbsp;imit=每页多少条<br/>
+	 * &nbsp;&nbsp;&nbsp;&nbsp;currentPage=当前页数<br/>
+	 * &nbsp;&nbsp;&nbsp;&nbsp;totalPage=供多少页<br/>
+	 * 
+	 * @param hql
+	 * @param start
+	 * @param limit
+	 * @param param
+	 * @return
+	 */
+	public<T> Map<String, Object> getPageResultMap(String hql, int start, int limit, Map<String, Object> params, Class<T> clazz) {
 		if (hql == null) {
 			return new HashMap<String, Object>();
 		}
 		Map<String, Object> result = new HashMap<String, Object>();
-		List<?> list = this.getPageListResult(hql, start, limit, params);
+		List<T> list = this.getPageListResult(clazz,hql, start, limit, params);
 		this.fillPageInfo(result, start, limit, hql, params);
 		result.put(Page.DATA_LIST, list);
 		return result;
 	}
-
+	
 	/**
 	 * 填充参数
 	 * 
