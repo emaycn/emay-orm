@@ -3,6 +3,8 @@ package cn.emay.orm;
 import java.beans.IntrospectionException;
 import java.util.List;
 
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -68,7 +70,15 @@ public class JdbcTemplateUtils {
 	 * @return
 	 */
 	public static <T> T findObjectUnique(JdbcTemplate jdbcTemplate, Class<T> objectClass, String sql, Object... parameters) {
-		return jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<T>(objectClass), parameters);
+		try {
+			T t = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<T>(objectClass), parameters);
+			return t;
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		} catch (IncorrectResultSizeDataAccessException e) {
+			List<T> list = findObjectListByClass(jdbcTemplate, objectClass, sql, parameters);
+			return list.size() > 0 ? list.get(0) : null;
+		}
 	}
 
 	/**

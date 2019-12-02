@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import cn.emay.utils.db.common.Page;
 
@@ -16,6 +17,8 @@ import cn.emay.utils.db.common.Page;
  *
  */
 public abstract class AbstractSqlDaoSupport {
+	
+	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 	/**
 	 * 获取JdbcTemplate
@@ -23,6 +26,18 @@ public abstract class AbstractSqlDaoSupport {
 	 * @return
 	 */
 	protected abstract JdbcTemplate getJdbcTemplate();
+	
+	/**
+	 * 获取名字映射JdbcTemplate
+	 * 
+	 * @return
+	 */
+	protected NamedParameterJdbcTemplate getNamedParameterJdbcTemplate() {
+		if (namedParameterJdbcTemplate == null) {
+			namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(getJdbcTemplate());
+		}
+		return namedParameterJdbcTemplate;
+	}
 
 	/*-----------------------------------------[sql]--------------------------------------------*/
 
